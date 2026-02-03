@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quant-D Web</title>
+    <style>
+        body { background:#0a1109; color:#20ff00; font-family: monospace; }
+        button { margin:5px; padding:10px; font-size:16px; }
+    </style>
+</head>
+<body>
+
+<h2>Quant-D (Web Version)</h2>
+
+<div>
+    <button onclick="gate('X')">X</button>
+    <button onclick="gate('Y')">Y</button>
+    <button onclick="gate('Z')">Z</button>
+    <button onclick="gate('H')">H</button>
+    <button onclick="gate('S')">S</button>
+    <button onclick="gate('SD')">SD</button>
+    <button onclick="gate('T')">T</button>
+    <button onclick="gate('TD')">TD</button>
+</div>
+
+<p id="output">Probability of |0⟩: 1.00<br>Probability of |1⟩: 0.00</p>
+
+<button onclick="reset()">Reset</button>
+
+<script>
+function gate(g) {
+    fetch("/gate", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({gate: g})
+    })
+    .then(r => r.json())
+    .then(d => {
+        document.getElementById("output").innerHTML =
+            `Probability of |0⟩: ${d.prob_0}<br>Probability of |1⟩: ${d.prob_1}`;
+    });
+}
+
+function reset() {
+    fetch("/reset", {method:"POST"})
+    .then(() => {
+        document.getElementById("output").innerHTML =
+            "Probability of |0⟩: 1.00<br>Probability of |1⟩: 0.00";
+    });
+}
+</script>
+
+</body>
+</html>
